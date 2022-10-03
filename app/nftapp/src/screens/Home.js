@@ -1,7 +1,15 @@
 import React, {useState, useEffect} from 'react';
-import {Text, View} from 'react-native';
+import {
+  Text,
+  View,
+  Image,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  TouchableOpacity,
+} from 'react-native';
 
-export default function HomeScreen() {
+export default function HomeScreen({navigation}) {
   const [collectionData, setCollectionData] = useState(null);
 
   const fetchData = async () => {
@@ -31,15 +39,47 @@ export default function HomeScreen() {
   }, []);
 
   return (
-    <View>
-      {collectionData &&
-        collectionData.map(collection => {
-          return <Text>{collection.name}</Text>;
-        })}
-      <Text>Home Screen</Text>
-      <Text>Home Screen</Text>
-      <Text>Home Screen</Text>
-      <Text>Home Screen</Text>
-    </View>
+    <SafeAreaView style={{backgroundColor: 'red'}}>
+      <ScrollView horizontal={true}>
+        {collectionData &&
+          collectionData.map((collection, index) => {
+            return (
+              <TouchableOpacity
+                key={index}
+                onPress={() =>
+                  navigation.navigate('Details', {
+                    id: collection.id,
+                  })
+                }
+                style={styles.scrollViewContainer}>
+                {/* <Text style={{backgroundColor: 'red'}}>
+                  {JSON.stringify(collection)}
+                </Text> */}
+                <Image
+                  source={{
+                    uri: collection.image_url,
+                  }}
+                  style={{
+                    width: 200,
+                    height: 200,
+                    borderRadius: 20,
+                    alignItems: 'center',
+                    margin: 5,
+                  }}
+                />
+              </TouchableOpacity>
+            );
+          })}
+      </ScrollView>
+    </SafeAreaView>
   );
 }
+
+const styles = StyleSheet.create({
+  scrollViewContainer: {
+    flex: 1,
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+});
