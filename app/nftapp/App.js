@@ -18,27 +18,6 @@ export default function App() {
   const Stack = createNativeStackNavigator();
 
   return (
-    // <SafeAreaView>
-    /* <View>
-        {collectionData.map((datum, index) => {
-          return (
-            <TouchableOpacity style={styles.data} key={index}>
-              <Text>{datum.name}</Text>
-              <Image source={{uri: datum.image_url}} />
-            </TouchableOpacity>
-          );
-        })}
-      </View> */
-    // <Text>66666</Text>
-    //   {collectionData && (
-    //     <View>
-    //       <Text>{JSON.stringify(collectionData)}</Text>
-    //     </View>
-    //   )}
-    //   <View>
-    //     <Button title="refresh" onPress={() => fetchData()}></Button>
-    //   </View>
-    // </SafeAreaView>
     <NavigationContainer>
       <Stack.Navigator>
         <Stack.Screen name="Home" component={HomeScreen} />
