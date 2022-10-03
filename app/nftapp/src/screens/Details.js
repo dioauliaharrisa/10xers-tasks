@@ -1,11 +1,20 @@
 import React, {useState, useEffect} from 'react';
-import {Text, View, SafeAreaView, Image, StyleSheet} from 'react-native';
+import {
+  Text,
+  View,
+  SafeAreaView,
+  Image,
+  StyleSheet,
+  Dimensions,
+} from 'react-native';
 import {LineChart} from 'react-native-chart-kit';
 
 export default function DetailsScreen({route}) {
   const [detailedData, setDetailedData] = useState(null);
+  const [XchartData, setXChartData] = useState(null);
+  const [YchartData, setYChartData] = useState(null);
   const {id} = route.params;
-  console.log(id);
+  const screenWidth = Dimensions.get('window').width;
 
   const fetchData = async () => {
     try {
@@ -21,12 +30,6 @@ export default function DetailsScreen({route}) {
         .item.filter(item => item.name === 'Get Collection Details By ID')[0]
         .response[0].body;
       const parsedData = JSON.parse(filteredDetailedData);
-
-      // const dataByID = parsedData.filter(datum => id === datum.id);
-
-      // console.log(dataByID);
-
-      console.log(666, parsedData);
       setDetailedData(parsedData);
     } catch (error) {
       console.log(error);
@@ -48,13 +51,18 @@ export default function DetailsScreen({route}) {
           item => item.name === 'Get Collection Stats By Collection ID',
         )[0].response[0].body;
       const parsedData = JSON.parse(filteredChartData);
-
-      // const dataByID = parsedData.filter(datum => id === datum.id);
-
-      // console.log(dataByID);
-
-      console.log(666, parsedData);
-      // setDetailedData(parsedData);
+      const XData = [];
+      const YData = [];
+      parsedData.forEach(datum => {
+        // console.log(datum);
+        XData.push(datum.timestamp);
+        YData.push(datum.floor_price_eth);
+      });
+      setXChartData(XData);
+      setYChartData(YData);
+      // console.log(666, parsedData);
+      console.log(XData);
+      // setXChartData(parsedData);
     } catch (error) {
       console.log(error);
     }
@@ -91,15 +99,36 @@ export default function DetailsScreen({route}) {
           <Text style={{flex: 1, backgroundColor: 'red'}}>
             {JSON.stringify(detailedData)}
           </Text>
-          {/* <LineChart
-            style={{
-              flex: 1,
-            }}
-            data={data}
-            verticalLabelRotation={30}
-            chartConfig={chartConfig}
-            bezier
-          /> */}
+          {YchartData && (
+            <LineChart
+              data={{
+                labels: YchartData,
+                datasets: [
+                  {
+                    data: XchartData,
+                  },
+                ],
+              }}
+              width={Dimensions.get('window').width} // from react-native
+              height={220}
+              yAxisInterval={1}
+              chartConfig={{
+                backgroundColor: '#f7f7f7',
+                decimalPlaces: 2,
+                color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+                labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+                style: {
+                  borderRadius: 16,
+                },
+                propsForDots: {
+                  r: '6',
+                  strokeWidth: '2',
+                  stroke: '#ffa726',
+                },
+              }}
+              bezier
+            />
+          )}
           <Text style={{flex: 3, backgroundColor: 'red'}}>
             {JSON.stringify(detailedData)}
           </Text>
